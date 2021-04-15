@@ -19,6 +19,14 @@ class _HomeState extends State<Home> {
 
   String encrypted = "";
 
+  bool isNumeric(String s) {
+    if(s == null) {
+      return false;
+    }
+    return double.parse(s, (e) => null) != null;
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,9 +94,15 @@ class _HomeState extends State<Home> {
                       hintText: 'Type here'
                     ),
                     validator: (val){
+
                       if(val.isEmpty){
                         return "Please enter your text first";
-                      }{
+                      }else{
+                        for(int i = 0; i < val.length; i++){
+                          if(isNumeric(val[i])){
+                            return "Don't use number";
+                          }
+                        }
                         return null;
                       }
                     },
@@ -108,6 +122,7 @@ class _HomeState extends State<Home> {
                         validate = true;
                       });
 
+
                       if(_formKey.currentState.validate()){
 
                         String enc = CaesarEnc.getEncryptedString(textEditingController.text, shift);
@@ -117,7 +132,8 @@ class _HomeState extends State<Home> {
                         });
 
                       }else{
-                        print("Please check ur input");
+                        final snackBar = SnackBar(content: Text("Please check ur input"));
+                        _scaffoldKey.currentState.showSnackBar(snackBar);
                       }
                     },
                   ),
@@ -125,22 +141,6 @@ class _HomeState extends State<Home> {
 
                 Spacer(),
 
-
-                ElevatedButton(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 12.0),
-                    child: Text("Read about 'Caesar Encryption'", style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w400, letterSpacing: 1.0),),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.grey[800], // background
-                    onPrimary: Colors.white, // foreground
-                  ),
-                  onPressed: (){
-
-                  },
-                ),
-
-                SizedBox(height: 10.0,),
               ],
             ),
           ),
